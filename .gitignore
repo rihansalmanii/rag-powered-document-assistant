@@ -1,0 +1,62 @@
+# ======================
+# 🔐 ENV FILES
+# ======================
+.env
+.env.*
+*.env
+
+# ======================
+# 🐍 PYTHON (BACKEND)
+# ======================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# FastAPI / logs
+*.log
+
+# ======================
+# 📦 NODE (FRONTEND)
+# ======================
+node_modules/
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ======================
+# 🧠 VECTOR DB / AI DATA
+# ======================
+chroma_db/
+vector_db/
+*.faiss
+*.pkl
+
+# Uploaded PDFs (optional)
+uploads/
+
+# ======================
+# 🧾 IDE / EDITOR
+# ======================
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# ======================
+# 🚀 OS FILES
+# ======================
+Thumbs.db
+
+ROADMAP.md
