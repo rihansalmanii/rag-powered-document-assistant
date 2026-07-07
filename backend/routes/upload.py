@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, File
 from services.pdf_services import extract_text
 from services.chunking import chunk_text
 from services.embeddings import get_embeddings
-from services.chroma import add_to_chroma
+from db.chroma import add_to_chroma
 
 
 router = APIRouter()
