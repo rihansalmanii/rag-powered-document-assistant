@@ -2,7 +2,7 @@ from db.chroma import collection
 from services.embeddings import model
 
 
-def retrieve_chunks(query, top_k=3, user_id=None, doc_id=None):
+def retrieve_chunks(query, top_k=5, user_id=None, doc_id=None):
     # query -> embeddings
     query_embedding = model.encode([query]).tolist()
 
@@ -39,11 +39,14 @@ def retrieve_chunks(query, top_k=3, user_id=None, doc_id=None):
     metadatas = result.get("metadatas", [[]])[0] or []
     distances = result.get("distances", [[]])[0] or []
 
+    THRESHOLD = 1.2
+
     chunks = []
 
     # picking one by one
     for doc, meta, dist in zip(documents, metadatas, distances):
-        chunks.append({
+        if dist < THRESHOLD:
+            chunks.append({
             "text": doc,
             "metadata": meta,
             "distance": dist
