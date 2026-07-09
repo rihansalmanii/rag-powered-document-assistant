@@ -1,6 +1,6 @@
 from sentence_transformers import SentenceTransformer
 
-model = SentenceTransformer("all-mpnet-base-v2")
+model = SentenceTransformer("BAAI/bge-base-en-v1.5")
 
 def  get_embeddings(chunks):
     embeddings = model.encode(chunks)
