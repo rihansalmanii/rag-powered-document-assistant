@@ -3,6 +3,7 @@ from services.pdf_services import extract_text
 from services.chunking import chunk_text
 from services.embeddings import get_embeddings
 from db.chroma import add_to_chroma
+from creds.credentials import user_id, doc_id
 
 
 router = APIRouter()
@@ -15,9 +16,7 @@ async def upload_pdf(file: UploadFile = File(...)):
         chunks = chunk_text(text)
         embeddings = get_embeddings(chunks)
 
-        # temp details
-        user_id = "test_user"
-        doc_id = "doc_1"
+        
 
         data = add_to_chroma(chunks, embeddings, user_id, doc_id)
 

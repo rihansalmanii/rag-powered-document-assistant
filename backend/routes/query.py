@@ -1,6 +1,9 @@
 from fastapi import APIRouter
 from services.retrieval import retrieve_chunks
 from services.generation import generate_answer
+from db.mongo import chat_collection
+from creds.credentials import user_id, doc_id
+
 
 router = APIRouter()
 
@@ -15,6 +18,14 @@ def get_query(query: str):
     )
 
     answer = generate_answer(query=query, chunks=chunks)
+
+    # storing chat in db
+    chat_collection.insert_one({
+        "user_id": user_id,
+        "doc_id": doc_id,
+        "query": query,
+        "response": answer
+    })
 
     return {
         "answer": answer,
