@@ -11,5 +11,7 @@ client = MongoClient(os.getenv("MONGO_URI"))
 db = client["DocLens"]
 
 # collections
-chat_collection = db["chats"]
+message_collection = db["messages"]
+conversation_collection = db["conversation"]
+user_collection = db["user"]
 
