@@ -20,18 +20,26 @@ class QueryRequest(BaseModel):
 def get_query(request: QueryRequest):
 
    try:
-
     query = request.query
     conversation_id = request.conversation_id
 
-    if conversation_id:
+    if conversation_id is not None:
        try:
           conversation_id = ObjectId(conversation_id)
-       except Exception as e:
+       except:
           return {"error": "invalid conversation_id"}
+       
+       existing = conversation_collection.find_one({
+                "_id": conversation_id,
+                "user_id": user_id
+            })
+
+        
+       if not existing:
+            return {"error": "conversation not found"}
 
        # if conversation_is is not exists -> new conversation
-    if not conversation_id:
+    else:
         conversation = {
             "user_id": user_id,
             "doc_id": doc_id,
@@ -43,15 +51,6 @@ def get_query(request: QueryRequest):
         conversation_id = conv.inserted_id    
 
 
-    # retrieving chunks from the db based on query, user_id, doc_id
-    chunks = retrieve_chunks(
-        query=query,
-        user_id=user_id,
-        doc_id=doc_id
-    )
-
-    answer = generate_answer(query=query, chunks=chunks)
-
     # storing chat in db
     message_collection.insert_one({
         "conversation_id": conversation_id,
@@ -62,8 +61,27 @@ def get_query(request: QueryRequest):
         "timestamp": datetime.utcnow()
     })
 
+
+    # retrieving chunks from the db based on query, user_id, doc_id
+    chunks = retrieve_chunks(
+        query=query,
+        user_id=user_id,
+        doc_id=doc_id
+    )
+
+    # history for next response
+    history = list(message_collection.find({
+            "conversation_id": conversation_id
+        }).sort("timestamp", -1).limit(10))
+
+
+    # generating response with history
+    answer = generate_answer(query=query, chunks=chunks, history=history)
+
+    
+    # storing the response in db
     message_collection.insert_one({
-        "conversation_id": str(conversation_id),
+        "conversation_id": conversation_id,
         "user_id": user_id,
         "doc_id": doc_id,
         "content": answer,
@@ -74,7 +92,7 @@ def get_query(request: QueryRequest):
     return {
         "conversation_id": str(conversation_id),
         "answer": answer,
-        "chunks": chunks
+        "chunks": len(chunks)
     }
    
    except Exception as e:
