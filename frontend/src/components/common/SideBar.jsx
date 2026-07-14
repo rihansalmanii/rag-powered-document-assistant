@@ -15,6 +15,7 @@ const SideBar = () => {
   return (
     <div className='text-white'>
       <div>
+        {/* header */}
         <Header />
       </div>
       <div>

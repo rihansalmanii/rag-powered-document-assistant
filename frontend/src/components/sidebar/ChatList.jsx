@@ -27,8 +27,6 @@ const ChatList = () => {
           </div>
         ))}
       </div>
-
-
     </div>
     
 

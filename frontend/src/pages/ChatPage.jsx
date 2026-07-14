@@ -7,6 +7,8 @@ const ChatPage = () => {
     const {id} = useParams()
 
   return (
+
+    // chat page
     <div>ChatPage</div>
   )
 }
