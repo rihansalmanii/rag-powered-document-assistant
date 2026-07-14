@@ -70,13 +70,13 @@ def get_query(request: QueryRequest):
     )
 
     # history for next response
-    history = list(message_collection.find({
-            "conversation_id": conversation_id
-        }).sort("timestamp", -1).limit(10))
+    # history = list(message_collection.find({
+    #         "conversation_id": conversation_id
+    #     }).sort("timestamp", -1).limit(10))
 
 
     # generating response with history
-    answer = generate_answer(query=query, chunks=chunks, history=history)
+    answer = generate_answer(query=query, chunks=chunks)
 
     
     # storing the response in db
