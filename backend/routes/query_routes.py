@@ -51,7 +51,7 @@ def get_query(request: QueryRequest):
         conversation_id = conv.inserted_id    
 
 
-    # storing chat in db
+    # storing user query  in db
     message_collection.insert_one({
         "conversation_id": conversation_id,
         "user_id": user_id,
@@ -98,4 +98,4 @@ def get_query(request: QueryRequest):
    except Exception as e:
       return {"error": str(e)}
 
-    
+
