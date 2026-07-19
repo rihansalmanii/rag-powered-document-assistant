@@ -5,35 +5,38 @@ from services.embeddings import get_embeddings
 from db.chroma import add_to_chroma
 from creds.credentials import user_id, doc_id
 from services.pdf_services import store_pdf
+from orchestrators.upload_orchestrator import handle_upload
 
 
 router = APIRouter()
 
 @router.post("/upload")
 async def upload_pdf(file: UploadFile = File(...)):
-    try:
-        upload_result = store_pdf(file.file)
+    result = await handle_upload(file)
+    return result
 
-        if not upload_result["success"]:
-            return upload_result
+    # try:
+    #     upload_result = store_pdf(file.file)
 
-        text = extract_text(file)
+    #     if not upload_result["success"]:
+    #         return upload_result
 
-        chunks = chunk_text(text)
-        embeddings = get_embeddings(chunks)
+    #     text = extract_text(file)
 
+    #     chunks = chunk_text(text)
+    #     embeddings = get_embeddings(chunks)
         
 
-        data = add_to_chroma(chunks, embeddings, user_id, doc_id)
+    #     data = add_to_chroma(chunks, embeddings, user_id, doc_id)
 
-        return { 
-            "message": "PDF processed and stored successfully!",
-            "filename": file.filename,
-            "chunks": len(chunks)
+    #     return { 
+    #         "message": "PDF processed and stored successfully!",
+    #         "filename": file.filename,
+    #         "chunks": len(chunks)
             
-        }
+    #     }
 
-    except Exception as e:
-        return {"error": str(e)}
+    # except Exception as e:
+    #     return {"error": str(e)}
     
 
