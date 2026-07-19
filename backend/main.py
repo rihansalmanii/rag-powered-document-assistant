@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import upload
+from routes import upload_routes
 from routes import query_routes
 from routes import conversation_routes
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,7 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(upload.router)
+app.include_router(upload_routes.router)
 app.include_router(query_routes.router)
 app.include_router(conversation_routes.router)
 

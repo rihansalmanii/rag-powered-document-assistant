@@ -30,7 +30,8 @@ async def handle_upload(file):
             "success": True,
             "message": "PDF processed successfully",
             "file_url": upload_result["url"],
-            "chunks": len(chunks)
+            "chunks_length": len(chunks),
+            "chunks": chunks
         }
     
     except Exception as e:
