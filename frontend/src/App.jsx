@@ -9,7 +9,7 @@ const App = () => {
     <div className='flex bg-[#1d1d1d] h-screen w-full'>
 
       {/* sidebar */}
-      <div className='min-w-78'>
+      <div className='w-1/6'>
         <SideBar />
       </div>
 
@@ -17,7 +17,7 @@ const App = () => {
       <div className='h-screen w-[0.5px] bg-[#505050]'></div>
 
       {/* main content */}
-      <div className='min-w-xl'>
+      <div className='w-5/6'>
         <Routes>
           {/* default (new chat) */}
           <Route path="/" element={<NewChat />} />

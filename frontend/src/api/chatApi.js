@@ -2,10 +2,7 @@ import axios from "axios";
 
 // 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  baseURL: "http://127.0.0.1:8000"
 });
 
 export default api;
@@ -44,3 +41,22 @@ export const getConversationMessages = async (conversation_id) => {
     console.log(err);
   }
 };
+
+// upload pdf
+export const uploadPDF = async (file) => {
+  const formData = new FormData()
+  formData.append("file", file)
+
+  try {
+    const response = await api.post("/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+
+    return response.data
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
+}
