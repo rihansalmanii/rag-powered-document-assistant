@@ -1,5 +1,6 @@
 import axios from "axios";
 import React from "react";
+import { sendQuery } from "../../api/chatApi";
 
 const StartChat = () => {
   const getData = async () => {

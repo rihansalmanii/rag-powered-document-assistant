@@ -2,7 +2,6 @@ from sentence_transformers import SentenceTransformer
 
 model = SentenceTransformer("BAAI/bge-base-en-v1.5")
 
-def  get_embeddings(chunks):
+def get_embeddings(chunks):
     embeddings = model.encode(chunks)
-
-    return embeddings
+    return embeddings.tolist()

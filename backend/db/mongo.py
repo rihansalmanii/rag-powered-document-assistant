@@ -14,4 +14,5 @@ db = client["DocLens"]
 message_collection = db["messages"]
 conversation_collection = db["conversation"]
 user_collection = db["user"]
+pdfs_collection = db["pdfs"]
 

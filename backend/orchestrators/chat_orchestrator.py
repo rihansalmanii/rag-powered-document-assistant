@@ -62,5 +62,11 @@ async def handle_get_all_conversations(user_id: str):
         return {"error": str(e)}
 
 
+# new conversation
+# async def handle_new_conversation(user_id: str):
+#     try:
+        
+
+
 
 

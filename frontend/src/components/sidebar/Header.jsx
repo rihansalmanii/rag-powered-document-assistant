@@ -1,8 +1,27 @@
 import React from 'react'
 import { IoMdAdd } from "react-icons/io";
+import { Link } from 'react-router-dom';
+import { getNewConversationId } from '../../api/chatApi';
+import { useNavigate } from "react-router-dom";
+
 
 
 const Header = () => {
+
+  const navigate = useNavigate();
+
+  const handleNewChat = async () => {
+    try {
+      const newConversationId = await getNewConversationId();
+      console.log("New Conversation ID:", newConversationId);
+      navigate(`/chat/${newConversationId}`);
+      // You can now use this newConversationId to navigate or perform other actions
+    } catch (error) {
+      console.error("Error fetching new conversation ID:", error);  
+    }
+    
+  }
+
   return (
     <div>
 
@@ -12,11 +31,15 @@ const Header = () => {
         </div>
 
         {/* start new chat */}
-        <div className='flex items-center gap-2 font-semibold rounded-lg w-65 mx-auto bg-[#0588df] text-white px-3 py-2'>
+        <div className='flex items-center gap-2 cursor-pointer font-semibold rounded-lg w-65 mx-auto bg-[#0588df] text-white px-3 py-2'
+        onClick={handleNewChat}>
             <span>
                 <IoMdAdd />
             </span>
-                <button>New Conversation</button>
+            <Link to="/">
+                <button className='cursor-pointer'
+                >New Chat</button>
+            </Link>
         </div>
     </div>
   )

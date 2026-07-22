@@ -2,29 +2,16 @@ from db.chroma import collection
 from services.embeddings import model
 
 
-def retrieve_chunks(query, top_k=5, user_id=None, doc_id=None):
+
+def retrieve_chunks(query, doc_id, top_k=5):
     # query -> embeddings
     query_embedding = model.encode([query]).tolist()
 
-    # filtering
-
-    # empty dictionary for filters
-    filters = []
-
-    if user_id is not None:
-        filters.append({"user_id": user_id})
-
-    if doc_id is not None:
-        filters.append({"doc_id": doc_id})
-
     # Final where condition
-    where = None
+    where = {
+        "doc_id": str(doc_id)
+    }
 
-    if len(filters) == 1:
-        where = filters[0]  # single condition
-
-    elif len(filters) > 1:
-        where = {"$and": filters} 
 
     # searching in db
     result = collection.query(
