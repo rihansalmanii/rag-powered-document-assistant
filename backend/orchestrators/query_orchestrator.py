@@ -86,10 +86,6 @@ def handle_query(
             doc_id=str(doc_id),
         )
 
-        # printing for debugging
-        print("CHUNKS RETURNED:", len(chunks))
-        print("CHUNKS DATA:", chunks)
-
         # Handle empty retrieval
         if not chunks:
             answer = "I couldn't find relevant information in the document."

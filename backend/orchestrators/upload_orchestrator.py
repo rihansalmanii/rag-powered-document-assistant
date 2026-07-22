@@ -28,9 +28,7 @@ def handle_upload(file, conversation_id: str = None):
         text = extract_text(file)
 
         # chunking
-        chunks = chunk_text(text)
-        print("CHUNK TYPE:", type(chunks[0]))
-        print("CHUNK VALUE:", chunks[0])    
+        chunks = chunk_text(text)   
 
         # embeddings
         embeddings = get_embeddings(chunks)
