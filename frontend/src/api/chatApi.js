@@ -7,9 +7,7 @@ const api = axios.create({
 
 export default api;
 
-// ===============================
-// SEND QUERY
-// ===============================
+// sending query
 export const sendQuery = async (query, conversationId) => {
   try {
     const docId = localStorage.getItem("doc_id");
@@ -23,7 +21,7 @@ export const sendQuery = async (query, conversationId) => {
       doc_id: docId,
     };
 
-    // ✅ only send valid Mongo ObjectId
+    // only send valid Mongo ObjectId
     if (conversationId && conversationId.length === 24) {
       payload.conversation_id = conversationId;
     }
@@ -40,9 +38,7 @@ export const sendQuery = async (query, conversationId) => {
   }
 };
 
-// ===============================
-// GET ALL CONVERSATIONS
-// ===============================
+// get all conversations
 export const getAllConversations = async () => {
   try {
     const res = await api.get("/conversations");
@@ -53,9 +49,7 @@ export const getAllConversations = async () => {
   }
 };
 
-// ===============================
-// GET MESSAGES OF A CONVERSATION
-// ===============================
+// get messages for a specific conversation
 export const getConversationMessages = async (conversation_id) => {
   try {
     const res = await api.get(`/conversations/${conversation_id}`);
@@ -66,9 +60,7 @@ export const getConversationMessages = async (conversation_id) => {
   }
 };
 
-// ===============================
-// UPLOAD PDF (✅ FIXED HERE)
-// ===============================
+// upload PDF
 export const uploadPDF = async (file, conversationId) => {
   const formData = new FormData();
   formData.append("file", file);
@@ -95,9 +87,7 @@ export const uploadPDF = async (file, conversationId) => {
   }
 };
 
-// ===============================
-// GET NEW CONVERSATION ID
-// ===============================
+// get new conversation ID for new chat
 export const getNewConversationId = async () => {
   try {
     const res = await api.post("/conversations/new_id");

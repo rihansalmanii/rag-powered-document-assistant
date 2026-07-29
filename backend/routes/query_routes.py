@@ -1,8 +1,7 @@
 from orchestrators.query_orchestrator import handle_query
-from fastapi import APIRouter
-from creds.credentials import user_id
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-
+from utils.dependencies import get_current_user
 
 router = APIRouter()
 
@@ -13,10 +12,10 @@ class QueryRequest(BaseModel):
 
 
 @router.post("/query")
-def query(request: QueryRequest):
+def query(request: QueryRequest, current_user_id: str = Depends(get_current_user)):
    return handle_query(
        query=request.query,
        doc_id=request.doc_id,
-       user_id=user_id,
+       user_id=current_user_id,
        conversation_id=request.conversation_id
    )
