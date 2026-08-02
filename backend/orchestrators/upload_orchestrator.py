@@ -6,7 +6,7 @@ from creds.credentials import user_id
 from db.mongo import pdfs_collection
 
 
-def handle_upload(file, conversation_id: str = None):
+def handle_upload(file, user_id: str, conversation_id: str = None):
     try:
         upload_result = store_pdf(file.file)
 

@@ -25,6 +25,11 @@ def handle_query(
         if not doc_id:
             raise HTTPException(status_code=400, detail="doc_id is required")
 
+        # is_valid_doc_id = conversation_collection.find_one({"doc_id": doc_id})
+
+        # if not is_valid_doc_id:
+        #     raise HTTPException(status_code=401, detail="invalid doc_id or no conversation  ")
+
         # Existing conversation
         if conversation_id:
             if not ObjectId.is_valid(conversation_id):
@@ -114,9 +119,9 @@ def handle_query(
             "chunks_data": chunks
         }
 
-    except HTTPException:
+    except HTTPException as e:
         # Let FastAPI handle known errors
-        raise
+        raise HTTPException(status_code=401, detail=str(e) )
 
     except Exception as e:
         # Unexpected errors

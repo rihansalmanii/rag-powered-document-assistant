@@ -44,6 +44,7 @@ async def handle_get_all_conversations(user_id: str):
 
 
 
+
         cleaned = []
 
         # object_id -> string as we cannot return objecId(JSON)

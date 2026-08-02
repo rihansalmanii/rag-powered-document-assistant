@@ -24,7 +24,7 @@ const ChatList = () => {
 
 
   return (
-    <div className="mt-18">
+    <div className="mt-18 h-[70vh] overflow-auto">
       <h1 className="px-3 font-medium text-lg text-[#c5c5c5] my-2">Recent</h1> 
       <div className="flex flex-col gap-3">
         {conversations.map((conv, idx) => (

@@ -17,14 +17,19 @@ const StartChat = () => {
   };
 
   return (
-    <div className="border border-[#adadad] w-[70vw] mx-auto h-24 px-5 py-5">
+    <div className="border borderFlying-[#adadad] w-[70vw] mx-auto h-24 px-5 py-5">
 
       {/* enter query */}
       <input
         type="text"
         placeholder="Start new chat"
         className="outline-none border-none"
-      />
+      />hl.bind(mainMod .. " + F",
+    hl.dsp.window.fullscreen({
+        mode = "maximized",          
+        action = "toggle"
+    })
+)
 
       <button onClick={getData}>Send</button>
     </div>

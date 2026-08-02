@@ -1,11 +1,4 @@
-import axios from "axios";
-
-// axios instance
-const api = axios.create({
-  baseURL: "http://127.0.0.1:8000"
-});
-
-export default api;
+import api from "./api";
 
 // sending query
 export const sendQuery = async (query, conversationId) => {
@@ -27,7 +20,7 @@ export const sendQuery = async (query, conversationId) => {
     }
 
     console.log("SENDING:", payload);
-
+    
     const res = await api.post("/query", payload);
 
     return res.data;

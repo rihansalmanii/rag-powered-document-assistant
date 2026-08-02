@@ -19,3 +19,4 @@ def query(request: QueryRequest, current_user_id: str = Depends(get_current_user
        user_id=current_user_id,
        conversation_id=request.conversation_id
    )
+   
