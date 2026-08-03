@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import { loginUser, registerUser, getCurrentUser, logoutUser } from "../api/authApi"
 import api from "../api/api"
+import { useNavigate } from "react-router-dom"
+
 
 
 
@@ -9,6 +11,8 @@ import api from "../api/api"
 const AuthContext = createContext(null)
 
 export const AuthProvider = ({children}) => {
+
+    const navigate = useNavigate()
 
     const [user, setUser] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -22,7 +26,10 @@ export const AuthProvider = ({children}) => {
 
         } catch(err) {
             setUser(null)
-            console.log(err)
+            
+            if(err.response?.status != 401) {
+                console.log("Auth check failed: ", err)
+            }
         } finally {
             setLoading(false)
         }
@@ -43,13 +50,13 @@ export const AuthProvider = ({children}) => {
             return response
 
         } catch(err) {
-            console.log(err)
+            throw err
         }
     }
 
-    const registerUser = async (userData) => {
+    const register = async (userData) => {
         try {
-            const response = await register(userData)
+            const response = await registerUser(userData)
 
             await checkAuth()
 
@@ -65,6 +72,7 @@ export const AuthProvider = ({children}) => {
             await logoutUser()
 
             setUser(null)
+            navigate("/signin")
         } catch(err) {
             console.log(err)
         }
@@ -72,7 +80,7 @@ export const AuthProvider = ({children}) => {
 
 
     return (
-        <AuthContext.Provider value={{login, registerUser, checkAuth, logout, user}}>
+        <AuthContext.Provider value={{login, register, checkAuth, logout, user}}>
             {children}
 
         </AuthContext.Provider>

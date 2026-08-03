@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import NewChat from './pages/NewChat'
 import SideBar from './components/common/SideBar'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router-dom'
 import ChatPage from './pages/ChatPage'
 import Login from './pages/Login'
 import { useAuth } from './contexts/AuthContext'
+import Signup from './pages/Signup'
+import Setting from './pages/Setting'
 
 const App = () => {
 
@@ -14,11 +16,17 @@ const App = () => {
     return <div className='text-lg font-semibold h-screen w-full mt-1/2 ml-1/2'>Loading..</div>
   }
   if(!user) {
-    return <Login />
+    return (
+      <Routes>
+        <Route path="/signin" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        {/* <Route path="*" element={<Navigate to="/login" />} /> */}
+      </Routes>
+    )
   }
 
   return (
-    <div className='flex bg-[#1d1d1d] h-screen w-full'>
+    <div className='flex bg-[#0f0f0f] h-screen w-full'>
 
 
       {/* sidebar */}
@@ -38,6 +46,9 @@ const App = () => {
 
           {/* specific conversation */}
           <Route path="/chat/:id" element={<ChatPage />} />
+
+          {/* setting */}
+          <Route path='/settings/:id' element={<Setting />}/>
         </Routes>
       </div>
 

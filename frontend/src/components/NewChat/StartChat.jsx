@@ -24,12 +24,7 @@ const StartChat = () => {
         type="text"
         placeholder="Start new chat"
         className="outline-none border-none"
-      />hl.bind(mainMod .. " + F",
-    hl.dsp.window.fullscreen({
-        mode = "maximized",          
-        action = "toggle"
-    })
-)
+      />
 
       <button onClick={getData}>Send</button>
     </div>
