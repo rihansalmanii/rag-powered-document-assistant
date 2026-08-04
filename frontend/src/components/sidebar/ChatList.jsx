@@ -63,7 +63,7 @@ const ChatList = () => {
 
         <div className="flex items-center gap-2">
           {!loading && conversations.length > 0 && (
-            <span className="rounded-full bg-white/[0.05] px-2 py-0.5 text-[9px] text-white/25">
+            <span className="rounded-full bg-white/[0.05] px-2 py-0.5 text-[10px] text-white/55">
               {conversations.length}
             </span>
           )}
@@ -73,10 +73,10 @@ const ChatList = () => {
             onClick={fetchConversations}
             disabled={loading}
             aria-label="Refresh conversations"
-            className="flex h-7 w-7 items-center justify-center rounded-lg text-white/25 transition hover:bg-white/[0.06] hover:text-white/65 disabled:opacity-40"
+            className="flex h-7 w-7 items-center justify-center rounded-lg text-white/55 transition hover:bg-white/[0.06] hover:text-white/65 disabled:opacity-40"
           >
             <FiRefreshCw
-              className={`text-xs ${
+              className={`text-sm ${
                 loading ? "animate-spin" : ""
               }`}
             />
@@ -106,7 +106,7 @@ const ChatList = () => {
 
         {!loading && error && (
           <div className="mx-1 rounded-2xl border border-red-400/10 bg-red-500/[0.055] px-4 py-4 text-center">
-            <p className="text-xs text-red-200/70">
+            <p className="text-sm text-red-200/70">
               {error}
             </p>
 
@@ -128,11 +128,11 @@ const ChatList = () => {
                 <FiMessageSquare className="text-lg text-white/25" />
               </div>
 
-              <p className="mt-4 text-sm font-medium text-white/50">
+              <p className="mt-4 text-md font-medium text-white/50">
                 No conversations yet
               </p>
 
-              <p className="mt-1 max-w-[190px] text-xs leading-5 text-white/25">
+              <p className="mt-1 max-w-[190px] text-sm leading-5 text-white/25">
                 Create a conversation and upload a PDF to get started.
               </p>
             </div>
@@ -176,7 +176,7 @@ const ChatList = () => {
 
                   <span className="min-w-0 flex-1 overflow-hidden">
                     <span
-                      className={`block w-full truncate text-[13px] ${
+                      className={`block w-full truncate text-[16px] ${
                         isActive
                           ? "font-medium text-white"
                           : "text-white/50 group-hover:text-white/80"

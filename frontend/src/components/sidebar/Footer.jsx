@@ -56,12 +56,12 @@ const Footer = () => {
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[13px] font-medium text-white/80">
+            <p className="truncate text-[15px] font-medium text-white/80">
               {username}
             </p>
 
             <p
-              className="mt-0.5 truncate text-[10px] text-white/25"
+              className="mt-0.5 truncate text-[13px] text-white/45"
               title={email}
             >
               {email}
@@ -75,7 +75,7 @@ const Footer = () => {
             aria-label="Open settings"
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-white/25 transition hover:bg-white/[0.07] hover:text-white/65 disabled:cursor-not-allowed disabled:opacity-30"
           >
-            <FiSettings className="text-sm" />
+            <FiSettings className="text-lg" />
           </button>
         </div>
 
@@ -102,7 +102,7 @@ const Footer = () => {
         </button>
       </div>
 
-      <p className="mt-3 text-center text-[9px] uppercase tracking-[0.18em] text-white/12">
+      <p className="mt-3 text-center text-[9px] uppercase tracking-[0.18em] text-white/28">
         DocLens · Private document chat
       </p>
     </footer>

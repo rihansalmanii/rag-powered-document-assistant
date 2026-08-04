@@ -254,7 +254,7 @@ const ChatPage = () => {
                   )}
 
                   <div
-                    className={`max-w-[84%] rounded-[22px] px-5 py-3.5 text-sm leading-6 shadow-lg md:max-w-[72%] ${isUser
+                    className={`max-w-[84%] rounded-[22px] px-5 py-3.5 text-[16.5px] leading-6 shadow-lg md:max-w-[72%] ${isUser
                         ? "rounded-br-md bg-white text-black shadow-[0_15px_50px_rgba(255,255,255,0.08)]"
                         : "rounded-bl-md border border-white/[0.08] bg-white/[0.065] text-white/80 shadow-[0_15px_50px_rgba(0,0,0,0.28)] backdrop-blur-xl"
                       }`}
@@ -380,7 +380,7 @@ const ChatPage = () => {
               }
               onKeyDown={handleKeyDown}
               disabled={uploading || sending}
-              className="max-h-36 min-h-11 min-w-0 flex-1 resize-none overflow-y-auto bg-transparent px-2 py-3 text-sm leading-5 text-white outline-none placeholder:text-white/25 disabled:cursor-not-allowed disabled:opacity-50"
+              className="max-h-36 min-h-11 min-w-0 flex-1 resize-none overflow-y-auto bg-transparent px-2 py-3 text-[18px] leading-5 text-white outline-none placeholder:text-white/25 disabled:cursor-not-allowed disabled:opacity-50"
             />
 
             <button

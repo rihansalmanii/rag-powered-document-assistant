@@ -31,15 +31,15 @@ const NewChat = () => {
     <main className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#020205] text-white">
       {/* Background */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 right-[5%] h-[600px] w-[180px] rotate-[32deg] bg-white/[0.07] blur-3xl" />
+        <div className="absolute -top-40 right-[5%] h-150 w-45 rotate-32 bg-white/[0.07] blur-3xl" />
 
-        <div className="absolute top-[10%] right-[20%] h-[500px] w-[100px] rotate-[32deg] bg-white/[0.035] blur-3xl" />
+        <div className="absolute top-[10%] right-[20%] h-125 w-25 rotate-32 bg-white/[0.035] blur-3xl" />
 
-        <div className="absolute -bottom-52 left-1/2 h-[400px] w-[900px] -translate-x-1/2 rounded-full bg-white/[0.025] blur-3xl" />
+        <div className="absolute -bottom-52 left-1/2 h-100 w-225 -translate-x-1/2 rounded-full bg-white/2.5 blur-3xl" />
       </div>
 
       <div className="relative z-10 flex max-w-xl flex-col items-center text-center">
-        <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-[24px] border border-white/10 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
+        <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-3xl border border-white/10 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
           <HiOutlineSparkles className="text-4xl text-white/80" />
         </div>
 
