@@ -68,16 +68,8 @@ const Login = () => {
       {/* Login card */}
       <section className="relative z-10 w-full max-w-[470px] rounded-[38px] border border-white/15 bg-white/[0.08] px-7 py-9 shadow-[0_28px_100px_rgba(0,0,0,0.75),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-2xl sm:px-10 sm:py-11">
         {/* Logo */}
-        <div className="mx-auto mb-5 grid h-12 w-12 grid-cols-3 gap-1.5 rounded-full p-1">
-          {Array.from({ length: 9 }).map((_, index) => (
-            <span
-              key={index}
-              className={`block rounded-full bg-white ${
-                index === 4 ? "scale-125" : "opacity-80"
-              }`}
-            />
-          ))}
-        </div>
+        {/* <div className="text-center text-5xl font-semibold">DocLens</div> */}
+
 
         <div className="text-center">
           <h1 className="text-3xl font-semibold tracking-tight">
@@ -105,7 +97,7 @@ const Login = () => {
               placeholder="Enter your email address"
               autoComplete="email"
               required
-              className="h-14 w-full rounded-2xl border border-white/10 bg-white/[0.07] pl-12 pr-4 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-white/25 focus:bg-white/[0.1] focus:ring-2 focus:ring-white/5"
+              className="h-14 w-full rounded-2xl border border-white/10 bg-white/[0.07] pl-12 pr-4 text-md text-white outline-none transition placeholder:text-white/35 focus:border-white/25 focus:bg-white/[0.1] focus:ring-2 focus:ring-white/5"
             />
           </div>
 
@@ -122,7 +114,7 @@ const Login = () => {
                 placeholder="Password"
                 autoComplete="current-password"
                 required
-                className="h-14 w-full rounded-2xl border border-white/10 bg-white/[0.07] pl-12 pr-12 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-white/25 focus:bg-white/[0.1] focus:ring-2 focus:ring-white/5"
+                className="h-14 w-full rounded-2xl border border-white/10 bg-white/[0.07] pl-12 pr-12 text-md text-white outline-none transition placeholder:text-white/35 focus:border-white/25 focus:bg-white/[0.1] focus:ring-2 focus:ring-white/5"
               />
 
               <button
@@ -160,7 +152,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="flex h-14 w-full items-center justify-center rounded-2xl bg-white text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex h-14 w-full items-center justify-center rounded-2xl bg-white text-md font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? (
               <span className="flex items-center gap-2">
