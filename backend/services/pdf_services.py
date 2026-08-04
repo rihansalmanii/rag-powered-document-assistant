@@ -3,8 +3,14 @@ import cloudinary
 import cloudinary.uploader
 import os
 from dotenv import load_dotenv
+from config.supabase_client import (SUPABASE_BUCKET, supabase)
 
 load_dotenv()
+
+
+
+
+
 
 cloudinary.config(
     cloud_name = os.getenv("CLOUD_NAME"),
