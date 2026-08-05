@@ -1,35 +1,47 @@
 import api from "./api";
 
 // sending query
-export const sendQuery = async (query, conversationId) => {
+export const sendQuery = async (
+  query,
+  conversationId,
+  docId
+) => {
   try {
-    const docId = localStorage.getItem("doc_id");
+    if (!query?.trim()) {
+      throw new Error("Query is required.")
+    }
+
+    if (!conversationId) {
+      throw new Error("Conversation ID is required.")
+    }
 
     if (!docId) {
-      throw new Error("Upload a PDF first.");
+      throw new Error(
+        "No PDF is linked to this conversation. Upload a PDF first."
+      )
     }
 
     const payload = {
-      query: query,
-      doc_id: docId,
-    };
-
-    // only send valid Mongo ObjectId
-    if (conversationId && conversationId.length === 24) {
-      payload.conversation_id = conversationId;
+      query: query.trim(),
+      conversation_id: conversationId,
+      doc_id: docId
     }
 
-    console.log("SENDING:", payload);
-    
-    const res = await api.post("/query", payload);
+    console.log("SENDING:", payload)
 
-    return res.data;
+    const response = await api.post("/query", payload)
 
+    return response.data
   } catch (err) {
-    console.error("API ERROR:", err.response?.data || err.message);
-    throw err;
+    console.error(
+      "API ERROR:",
+      err.response?.data || err.message
+    )
+
+    throw err
   }
-};
+}
+
 
 // get all conversations
 export const getAllConversations = async () => {
@@ -57,11 +69,8 @@ export const getConversationMessages = async (conversation_id) => {
 export const uploadPDF = async (file, conversationId) => {
   const formData = new FormData();
   formData.append("file", file);
+  formData.append("conversation_id", conversationId);
 
-  // ✅ FIX: now conversationId is passed as parameter
-  if (conversationId && conversationId.length === 24) {
-    formData.append("conversation_id", conversationId);
-  }
 
   try {
     const response = await api.post("/upload", formData, {
@@ -72,6 +81,9 @@ export const uploadPDF = async (file, conversationId) => {
 
     localStorage.setItem("doc_id", response.data.doc_id);
 
+
+    console.log("UPLOAD CONVERSATION ID:", conversationId)
+    console.log("UPLOAD CONVERSATION ID LENGTH:", conversationId?.length)
     return response.data;
 
   } catch (err) {

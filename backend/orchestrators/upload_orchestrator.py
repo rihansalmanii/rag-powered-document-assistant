@@ -30,6 +30,9 @@ async def handle_upload(file, user_id: str, conversation_id: str = None):
         print("Mongo insert acknowledged:", store_result.acknowledged)
         print("Mongo inserted ID:", store_result.inserted_id)
 
+        print("Database:", pdfs_collection.database.name)
+        print("Collection:", pdfs_collection.name)
+
         stored_pdf = pdfs_collection.find_one({
             "_id": store_result.inserted_id
         })

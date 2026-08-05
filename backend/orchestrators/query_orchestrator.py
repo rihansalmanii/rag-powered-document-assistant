@@ -1,14 +1,14 @@
 from datetime import datetime
+
 from bson import ObjectId
 from fastapi import HTTPException
 
+from db.mongo import (
+    conversation_collection,
+    message_collection
+)
 from services.retrieval import retrieve_chunks
 from services.generation import generate_answer
-
-from db.mongo import (
-    message_collection,
-    conversation_collection
-)
 
 
 def handle_query(
@@ -18,47 +18,67 @@ def handle_query(
     conversation_id: str | None = None
 ):
     try:
-        # Validation
+        query = query.strip()
+
         if not query:
-            raise HTTPException(status_code=400, detail="query is required")
+            raise HTTPException(
+                status_code=400,
+                detail="Query is required"
+            )
 
         if not doc_id:
-            raise HTTPException(status_code=400, detail="doc_id is required")
+            raise HTTPException(
+                status_code=400,
+                detail="Document ID is required"
+            )
 
-        # is_valid_doc_id = conversation_collection.find_one({"doc_id": doc_id})
-
-        # if not is_valid_doc_id:
-        #     raise HTTPException(status_code=401, detail="invalid doc_id or no conversation  ")
-
-        # Existing conversation
+        # Conversation ID sent from frontend
         if conversation_id:
             if not ObjectId.is_valid(conversation_id):
-                raise HTTPException(status_code=400, detail="invalid conversation_id")
+                raise HTTPException(
+                    status_code=400,
+                    detail="Invalid conversation ID"
+                )
 
             conv_obj_id = ObjectId(conversation_id)
 
             existing = conversation_collection.find_one({
                 "_id": conv_obj_id,
-                "user_id": user_id,
-                "doc_id": doc_id
+                "user_id": user_id
             })
 
+            # The ID was generated before upload/query,
+            # but the conversation has not yet been inserted
             if not existing:
-                raise HTTPException(status_code=404, detail="conversation not found")
+                conversation_collection.insert_one({
+                    "_id": conv_obj_id,
+                    "user_id": user_id,
+                    "doc_id": doc_id,
+                    "title": query[:30],
+                    "created_at": datetime.utcnow()
+                })
 
-            conversation_id = conv_obj_id
+            # Conversation exists; verify document association
+            elif existing.get("doc_id") != doc_id:
+                raise HTTPException(
+                    status_code=400,
+                    detail="This document does not belong to the conversation"
+                )
 
-        # New conversation
+        # No ID sent: create a completely new conversation
         else:
-            conversation = {
+            conv_obj_id = ObjectId()
+
+            conversation_collection.insert_one({
+                "_id": conv_obj_id,
                 "user_id": user_id,
                 "doc_id": doc_id,
                 "title": query[:30],
                 "created_at": datetime.utcnow()
-            }
+            })
 
-            conv = conversation_collection.insert_one(conversation)
-            conversation_id = conv.inserted_id
+        # From here onward, always use the ObjectId
+        conversation_id = conv_obj_id
 
         # Store user message
         message_collection.insert_one({
@@ -70,38 +90,43 @@ def handle_query(
             "timestamp": datetime.utcnow()
         })
 
-        # Fetch recent chat history (last 5 messages)
+        # Fetch recent history
         history_docs = list(
-            message_collection.find(
-                {"conversation_id": conversation_id}
-            ).sort("timestamp", -1).limit(5)
+            message_collection.find({
+                "conversation_id": conversation_id,
+                "user_id": user_id
+            })
+            .sort("timestamp", -1)
+            .limit(5)
         )
 
         history = [
             {
-                "role": msg["role"],
-                "content": msg["content"]
+                "role": message["role"],
+                "content": message["content"]
             }
-            for msg in reversed(history_docs)
+            for message in reversed(history_docs)
         ]
 
-        # Retrieve chunks
+        # Retrieve relevant chunks
         chunks = retrieve_chunks(
             query=query,
-            doc_id=str(doc_id),
+            doc_id=doc_id
         )
 
-        # Handle empty retrieval
         if not chunks:
-            answer = "I couldn't find relevant information in the document."
+            answer = (
+                "I couldn't find relevant information "
+                "in the document."
+            )
         else:
             answer = generate_answer(
                 query=query,
                 chunks=chunks,
-                history=history  # <-- important upgrade
+                history=history
             )
 
-        # Store assistant response
+        # Store assistant message
         message_collection.insert_one({
             "conversation_id": conversation_id,
             "user_id": user_id,
@@ -111,7 +136,6 @@ def handle_query(
             "timestamp": datetime.utcnow()
         })
 
-        # Response
         return {
             "conversation_id": str(conversation_id),
             "answer": answer,
@@ -119,10 +143,11 @@ def handle_query(
             "chunks_data": chunks
         }
 
-    except HTTPException as e:
-        # Let FastAPI handle known errors
-        raise HTTPException(status_code=401, detail=str(e) )
+    except HTTPException:
+        raise
 
-    except Exception as e:
-        # Unexpected errors
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
+        )

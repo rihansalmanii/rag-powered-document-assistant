@@ -1,73 +1,94 @@
 from bson import ObjectId
 from bson.errors import InvalidId
-from db.mongo import message_collection
-from db.mongo import conversation_collection
+
+from db.mongo import (
+    message_collection,
+    conversation_collection
+)
 
 
-async def handle_get_conversation(conversation_id: str, user_id):
+async def handle_get_conversation(
+    conversation_id: str,
+    user_id: str
+):
     try:
         try:
-            # handle invalid conversation_id from frontend
             conv_id = ObjectId(conversation_id)
         except InvalidId:
-            return{"error": "invalid conversation_id"}
+            return {
+                "error": "Invalid conversation ID"
+            }
 
-
-        messages = list(message_collection.find({
-            "conversation_id": conv_id,
+        # First verify conversation ownership
+        conversation = conversation_collection.find_one({
+            "_id": conv_id,
             "user_id": user_id
-        }).sort("timestamp", 1))
+        })
 
-        if not messages:
-            return {"error": "conversation not found"}
+        if not conversation:
+            return {
+                "error": "Conversation not found"
+            }
 
-        for msg in messages:
-            msg["_id"] = str(msg["_id"])
-            msg["conversation_id"] = str(msg["conversation_id"])
+        # Then fetch messages
+        messages = list(
+            message_collection.find({
+                "conversation_id": conv_id,
+                "user_id": user_id
+            }).sort("timestamp", 1)
+        )
+
+        for message in messages:
+            message["_id"] = str(message["_id"])
+            message["conversation_id"] = str(
+                message["conversation_id"]
+            )
 
         return {
+            "conversation_id": str(conversation["_id"]),
+            "doc_id": conversation.get("doc_id"),
+            "title": conversation.get(
+                "title",
+                "New Chat"
+            ),
             "messages": messages
         }
 
-    except Exception as e:
-        return {"error": str(e)}
+    except Exception as error:
+        return {
+            "error": str(error)
+        }
 
 
-
-async def handle_get_all_conversations(user_id: str):
-
+async def handle_get_all_conversations(
+    user_id: str
+):
     try:
-        # fetch all the conversations of specific user
-        conversations = list(conversation_collection.find(
-            {"user_id": user_id}
-        ).sort("created_at", -1))
-
-
-
+        conversations = list(
+            conversation_collection.find({
+                "user_id": user_id
+            }).sort("created_at", -1)
+        )
 
         cleaned = []
 
-        # object_id -> string as we cannot return objecId(JSON)
-        for conv in conversations:
+        for conversation in conversations:
             cleaned.append({
-                "conversation_id": str(conv["_id"]),
-                "title": conv.get("title", "New Chat")
+                "conversation_id": str(
+                    conversation["_id"]
+                ),
+                "title": conversation.get(
+                    "title",
+                    "New Chat"
+                ),
+                "doc_id": conversation.get("doc_id")
             })
-        
 
         return {
             "conversations": cleaned
         }
-    
-    except Exception as e:  
-        return {"error": str(e)}
 
-
-# new conversation
-# async def handle_new_conversation(user_id: str):
-#     try:
-        
-
-
-
-
+    except Exception as error:
+        return {
+            "error": str(error)
+        }
