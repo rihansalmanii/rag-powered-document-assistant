@@ -1,43 +1,102 @@
-from db.chroma import collection
+from qdrant_client.models import (
+    FieldCondition,
+    Filter,
+    MatchValue
+)
+
+from config.qdrant_client import (
+    client,
+    QDRANT_COLLECTION
+)
+
 from services.embeddings import model
 
 
+def retrieve_chunks(
+    query: str,
+    doc_id: str,
+    user_id: str,
+    top_k: int = 5
+):
+    if not query or not query.strip():
+        return []
 
-def retrieve_chunks(query, doc_id, top_k=5):
-    # query -> embeddings
-    query_embedding = model.encode([query]).tolist()
+    # Keep embedding format consistent with document embeddings
+    query_embedding = model.encode(
+        [query.strip()]
+    )[0]
 
-    # Final where condition
-    where = {
-        "doc_id": str(doc_id)
-    }
-
-
-    # searching in db
-    result = collection.query(
-        query_embeddings = query_embedding,
-        n_results = top_k,
-        where = where 
+    query_vector = (
+        query_embedding.tolist()
+        if hasattr(query_embedding, "tolist")
+        else list(query_embedding)
     )
 
-    
-    # retreival return 2d list so taking first one
-    documents = result.get("documents", [[]])[0] or []
-    metadatas = result.get("metadatas", [[]])[0] or []
-    distances = result.get("distances", [[]])[0] or []
+    print("RETRIEVING FROM QDRANT")
+    print("USER ID:", str(user_id))
+    print("DOC ID:", str(doc_id))
+    print("VECTOR LENGTH:", len(query_vector))
 
-    THRESHOLD = 1.2
+    result = client.query_points(
+        collection_name=QDRANT_COLLECTION,
+        query=query_vector,
+        query_filter=Filter(
+            must=[
+                FieldCondition(
+                    key="user_id",
+                    match=MatchValue(
+                        value=str(user_id)
+                    )
+                ),
+                FieldCondition(
+                    key="doc_id",
+                    match=MatchValue(
+                        value=str(doc_id)
+                    )
+                )
+            ]
+        ),
+        limit=top_k,
+        with_payload=True,
+        with_vectors=False
+    )
+
+    print("QDRANT MATCHES:", len(result.points))
 
     chunks = []
 
-    # picking one by one
-    for doc, meta, dist in zip(documents, metadatas, distances):
-        if dist < THRESHOLD:
+    for point in result.points:
+        payload = point.payload or {}
+        text = payload.get("text")
+
+        print(
+            "SCORE:",
+            point.score,
+            "DOC ID:",
+            payload.get("doc_id")
+        )
+
+    for index, point in enumerate(result.points, start=1):
+        payload = point.payload or {}
+        text = payload.get("text", "")
+
+        distance = 1 - point.score
+
+        print(f"\nRESULT {index}")
+        print("SCORE:", point.score)
+        print("DISTANCE:", distance)
+        print("TEXT:", text[:400])
+
+        SCORE_THRESHOLD = 0.46
+
+        # Do not apply a threshold yet.
+        # First confirm that retrieval works correctly.
+        if text and point.score >= SCORE_THRESHOLD:
             chunks.append({
-            "text": doc,
-            "metadata": meta,
-            "distance": dist
-        })
+                "text": text,
+                "metadata": payload,
+                "score": point.score,
+                "distance": 1 - point.score
+            })
 
     return chunks
-    

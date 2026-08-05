@@ -48,6 +48,11 @@ const ChatPage = () => {
   // Load old conversation and its associated doc_id
   useEffect(() => {
     const getMessages = async () => {
+      if (!id) {
+        setLoadingConversation(false)
+        return
+      }
+
       try {
         setLoadingConversation(true)
         setError("")
@@ -55,10 +60,24 @@ const ChatPage = () => {
         setDocId(null)
         setConversationId(id)
 
-        const res =
-          await getConversationMessages(id)
+        const res = await getConversationMessages(id)
 
-        if (res.error) {
+        /*
+         * A newly generated conversation ID does not exist
+         * in MongoDB until the first successful query.
+         * Treat it as a new empty conversation.
+         */
+        if (
+          res?.error?.toLowerCase() ===
+          "conversation not found"
+        ) {
+          setMessages([])
+          setDocId(null)
+          setConversationId(id)
+          return
+        }
+
+        if (res?.error) {
           throw new Error(res.error)
         }
 
@@ -66,26 +85,41 @@ const ChatPage = () => {
         setConversationId(
           res.conversation_id || id
         )
-
-        // Critical fix for old conversations
         setDocId(res.doc_id || null)
       } catch (err) {
         console.error(err)
 
-        setError(
+        const errorMessage =
           err.response?.data?.detail ||
           err.response?.data?.error ||
           err.message ||
           "Unable to load this conversation."
-        )
+
+        /*
+         * Handle both:
+         * 1. Backend returning { error: "Conversation not found" }
+         * 2. Backend throwing a 404 with the same message
+         */
+        if (
+          typeof errorMessage === "string" &&
+          errorMessage
+            .toLowerCase()
+            .includes("conversation not found")
+        ) {
+          setMessages([])
+          setDocId(null)
+          setConversationId(id)
+          setError("")
+          return
+        }
+
+        setError(errorMessage)
       } finally {
         setLoadingConversation(false)
       }
     }
 
-    if (id) {
-      getMessages()
-    }
+    getMessages()
   }, [id])
 
   // Scroll to latest message
@@ -210,9 +244,7 @@ const ChatPage = () => {
     }
   }
 
-  const handleFileChange = async (
-    event
-  ) => {
+  const handleFileChange = async (event) => {
     const selectedFile =
       event.target.files?.[0]
 
@@ -227,6 +259,8 @@ const ChatPage = () => {
       setError(
         "Please select a valid PDF file."
       )
+
+      event.target.value = ""
       return
     }
 
@@ -234,6 +268,8 @@ const ChatPage = () => {
       setError(
         "Conversation ID is missing."
       )
+
+      event.target.value = ""
       return
     }
 
@@ -249,10 +285,10 @@ const ChatPage = () => {
 
       console.log("Uploaded:", res)
 
-      if (!res.success) {
+      if (!res?.success) {
         throw new Error(
-          res.error ||
-          res.message ||
+          res?.error ||
+          res?.message ||
           "PDF upload failed."
         )
       }
@@ -263,11 +299,13 @@ const ChatPage = () => {
         )
       }
 
-      if (res.doc_id) {
-        // Critical fix:
-        // use state for the current conversation
-        setDocId(res.doc_id)
+      if (!res.doc_id) {
+        throw new Error(
+          "The server did not return a document ID."
+        )
       }
+
+      setDocId(res.doc_id)
     } catch (err) {
       console.error(err)
 
@@ -279,6 +317,7 @@ const ChatPage = () => {
       )
 
       setFile(null)
+      setDocId(null)
     } finally {
       setUploading(false)
 
@@ -304,6 +343,7 @@ const ChatPage = () => {
     uploading ||
     sending ||
     loadingConversation ||
+    !docId ||
     !input.trim()
 
   return (
@@ -339,11 +379,10 @@ const ChatPage = () => {
 
         <div className="hidden shrink-0 items-center gap-2 rounded-full border border-white/[0.07] bg-white/[0.04] px-3 py-1.5 text-[10px] uppercase tracking-wider text-white/30 sm:flex">
           <span
-            className={`h-1.5 w-1.5 rounded-full ${
-              docId
-                ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]"
-                : "bg-yellow-400"
-            }`}
+            className={`h-1.5 w-1.5 rounded-full ${docId
+              ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]"
+              : "bg-yellow-400"
+              }`}
           />
 
           {docId ? "Ready" : "No document"}
@@ -393,11 +432,10 @@ const ChatPage = () => {
                 return (
                   <div
                     key={msg._id}
-                    className={`flex w-full items-end gap-3 ${
-                      isUser
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
+                    className={`flex w-full items-end gap-3 ${isUser
+                      ? "justify-end"
+                      : "justify-start"
+                      }`}
                   >
                     {!isUser && (
                       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.09] bg-white/[0.055]">
@@ -406,11 +444,10 @@ const ChatPage = () => {
                     )}
 
                     <div
-                      className={`max-w-[84%] rounded-[22px] px-5 py-3.5 text-[16.5px] leading-6 shadow-lg md:max-w-[72%] ${
-                        isUser
-                          ? "rounded-br-md bg-white text-black shadow-[0_15px_50px_rgba(255,255,255,0.08)]"
-                          : "rounded-bl-md border border-white/[0.08] bg-white/[0.065] text-white/80 shadow-[0_15px_50px_rgba(0,0,0,0.28)] backdrop-blur-xl"
-                      }`}
+                      className={`max-w-[84%] rounded-[22px] px-5 py-3.5 text-[16.5px] leading-6 shadow-lg md:max-w-[72%] ${isUser
+                        ? "rounded-br-md bg-white text-black shadow-[0_15px_50px_rgba(255,255,255,0.08)]"
+                        : "rounded-bl-md border border-white/[0.08] bg-white/[0.065] text-white/80 shadow-[0_15px_50px_rgba(0,0,0,0.28)] backdrop-blur-xl"
+                        }`}
                     >
                       <p className="whitespace-pre-wrap break-words">
                         {msg.content}
@@ -520,11 +557,10 @@ const ChatPage = () => {
 
             <label
               htmlFor="pdfUpload"
-              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition ${
-                uploading
-                  ? "cursor-not-allowed bg-white/[0.025] text-white/15"
-                  : "cursor-pointer bg-white/[0.055] text-white/45 hover:bg-white/[0.09] hover:text-white"
-              }`}
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition ${uploading
+                ? "cursor-not-allowed bg-white/[0.025] text-white/15"
+                : "cursor-pointer bg-white/[0.055] text-white/45 hover:bg-white/[0.09] hover:text-white"
+                }`}
             >
               <IoMdAdd className="text-2xl" />
             </label>
@@ -534,7 +570,9 @@ const ChatPage = () => {
               placeholder={
                 docId
                   ? "Ask your PDF..."
-                  : "Upload a PDF first..."
+                  : uploading
+                    ? "Processing your PDF..."
+                    : "Upload a PDF first..."
               }
               value={input}
               onChange={(event) =>
@@ -544,7 +582,8 @@ const ChatPage = () => {
               disabled={
                 uploading ||
                 sending ||
-                loadingConversation
+                loadingConversation ||
+                !docId
               }
               className="max-h-36 min-h-11 min-w-0 flex-1 resize-none overflow-y-auto bg-transparent px-2 py-3 text-[18px] leading-5 text-white outline-none placeholder:text-white/25 disabled:cursor-not-allowed disabled:opacity-50"
             />
@@ -553,11 +592,10 @@ const ChatPage = () => {
               type="button"
               onClick={handleSend}
               disabled={queryDisabled}
-              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition ${
-                queryDisabled
-                  ? "cursor-not-allowed bg-white/[0.035] text-white/15"
-                  : "bg-white text-black hover:bg-white/90"
-              }`}
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition ${queryDisabled
+                ? "cursor-not-allowed bg-white/[0.035] text-white/15"
+                : "bg-white text-black hover:bg-white/90"
+                }`}
             >
               {sending ? (
                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-black/20 border-t-black" />

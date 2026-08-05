@@ -111,7 +111,9 @@ def handle_query(
         # Retrieve relevant chunks
         chunks = retrieve_chunks(
             query=query,
-            doc_id=doc_id
+            doc_id=doc_id,
+            user_id=user_id,
+            top_k=5
         )
 
         if not chunks:
