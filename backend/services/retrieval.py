@@ -32,11 +32,6 @@ def retrieve_chunks(
         else list(query_embedding)
     )
 
-    print("RETRIEVING FROM QDRANT")
-    print("USER ID:", str(user_id))
-    print("DOC ID:", str(doc_id))
-    print("VECTOR LENGTH:", len(query_vector))
-
     result = client.query_points(
         collection_name=QDRANT_COLLECTION,
         query=query_vector,
@@ -61,7 +56,6 @@ def retrieve_chunks(
         with_vectors=False
     )
 
-    print("QDRANT MATCHES:", len(result.points))
 
     chunks = []
 
@@ -69,12 +63,6 @@ def retrieve_chunks(
         payload = point.payload or {}
         text = payload.get("text")
 
-        print(
-            "SCORE:",
-            point.score,
-            "DOC ID:",
-            payload.get("doc_id")
-        )
 
     for index, point in enumerate(result.points, start=1):
         payload = point.payload or {}
@@ -82,10 +70,6 @@ def retrieve_chunks(
 
         distance = 1 - point.score
 
-        print(f"\nRESULT {index}")
-        print("SCORE:", point.score)
-        print("DISTANCE:", distance)
-        print("TEXT:", text[:400])
 
         SCORE_THRESHOLD = 0.46
 

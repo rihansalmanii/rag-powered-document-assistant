@@ -283,7 +283,6 @@ const ChatPage = () => {
         conversationId
       )
 
-      console.log("Uploaded:", res)
 
       if (!res?.success) {
         throw new Error(

@@ -28,7 +28,6 @@ const ChatList = () => {
 
       setConversations(data.conversations || [])
     } catch (error) {
-      console.error(error)
 
       setConversations([])
 

@@ -33,10 +33,7 @@ export const sendQuery = async (
 
     return response.data
   } catch (err) {
-    console.error(
-      "API ERROR:",
-      err.response?.data || err.message
-    )
+
 
     throw err
   }
@@ -49,7 +46,6 @@ export const getAllConversations = async () => {
     const res = await api.get("/conversations");
     return res.data;
   } catch (err) {
-    console.log(err);
     throw err;
   }
 };
@@ -60,7 +56,6 @@ export const getConversationMessages = async (conversation_id) => {
     const res = await api.get(`/conversations/${conversation_id}`);
     return res.data;
   } catch (err) {
-    console.log(err);
     throw err;
   }
 };
@@ -82,12 +77,9 @@ export const uploadPDF = async (file, conversationId) => {
     localStorage.setItem("doc_id", response.data.doc_id);
 
 
-    console.log("UPLOAD CONVERSATION ID:", conversationId)
-    console.log("UPLOAD CONVERSATION ID LENGTH:", conversationId?.length)
     return response.data;
 
   } catch (err) {
-    console.error("UPLOAD ERROR:", err.response?.data || err.message);
     throw err;
   }
 };
@@ -98,7 +90,6 @@ export const getNewConversationId = async () => {
     const res = await api.post("/conversations/new_id");
     return res.data.conversation_id;
   } catch (err) {
-    console.log(err);
     throw err;
   }
 };

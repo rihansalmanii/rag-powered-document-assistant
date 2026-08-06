@@ -38,7 +38,7 @@ const Footer = () => {
       setLoggingOut(true)
       await logout()
     } catch (error) {
-      console.error("Logout failed:", error)
+      console.error("Error logging out:", error)
     } finally {
       setLoggingOut(false)
     }

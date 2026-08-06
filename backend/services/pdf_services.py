@@ -43,7 +43,6 @@ async def store_pdf(file, user_id, conversation_id):
                     file_options={"content-type": "application/pdf", "upsert": "false"},
                 )
 
-        print("SUPABASE RESPONSE:", response)
 
         await file.seek(0)
 

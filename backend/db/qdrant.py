@@ -60,10 +60,6 @@ def add_to_qdrant(
         len(points) + batch_size - 1
     ) // batch_size
 
-    print(
-        f"Qdrant points: {len(points)}, "
-        f"batches: {total_batches}"
-    )
 
     for start in range(
         0,
@@ -78,16 +74,9 @@ def add_to_qdrant(
             start // batch_size
         ) + 1
 
-        print(
-            f"Uploading Qdrant batch "
-            f"{batch_number}/{total_batches}, "
-            f"points={len(batch)}"
-        )
 
         client.upsert(
             collection_name=QDRANT_COLLECTION,
             points=batch,
             wait=True
         )
-
-    print("All Qdrant batches uploaded")

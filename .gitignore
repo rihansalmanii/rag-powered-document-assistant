@@ -59,6 +59,9 @@ uploads/
 # ======================
 Thumbs.db
 
+test_supabase.py
+test_qdrant.py
+test.py
 ROADMAP.md
 
 

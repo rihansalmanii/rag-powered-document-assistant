@@ -4,7 +4,6 @@ import { useAuth } from '../contexts/AuthContext'
 const Setting = () => {
 
     const { user } = useAuth()
-    console.log(user)
 
   return (
     <div className='my-6 mx-6'>
