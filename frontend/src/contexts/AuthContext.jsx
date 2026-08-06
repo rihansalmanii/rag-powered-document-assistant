@@ -18,7 +18,6 @@ export const AuthProvider = ({children}) => {
         try {
             const data = await getCurrentUser()
             setUser(data)
-            console.log("checkAuth: ",data)
             
 
         } catch(err) {
