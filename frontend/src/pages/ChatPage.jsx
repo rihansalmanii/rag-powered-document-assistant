@@ -200,6 +200,12 @@ const ChatPage = () => {
         conversationId
       )
 
+      window.dispatchEvent(
+        new CustomEvent(
+          "conversation-created"
+        )
+      )
+
       const botMsg = {
         _id: `assistant-${Date.now()}`,
         content: res.answer,

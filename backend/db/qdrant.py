@@ -5,6 +5,7 @@ from qdrant_client.models import (
     Filter,
     FilterSelector,
     MatchValue,
+    PointStruct
 )
 
 from config.qdrant_client import (
