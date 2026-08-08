@@ -4,7 +4,8 @@ from fastapi import APIRouter, Depends
 from utils.dependencies import get_current_user
 from orchestrators.chat_orchestrator import (
     handle_get_conversation,
-    handle_get_all_conversations
+    handle_get_all_conversations,
+    handle_delete_conversation_by_id
 )
 
 router = APIRouter()
@@ -37,3 +38,7 @@ async def new_conversation(
     return {
         "conversation_id": str(ObjectId())
     }
+
+@router.post("/delete/{conversation_id}")
+def delete_conversation_by_id(conversation_id: str, user_id: str = Depends(get_current_user)):
+    return handle_delete_conversation_by_id(conversation_id=conversation_id, user_id=user_id)

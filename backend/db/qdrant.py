@@ -1,6 +1,11 @@
 import uuid
 
-from qdrant_client.models import PointStruct
+from qdrant_client.models import (
+    FieldCondition,
+    Filter,
+    FilterSelector,
+    MatchValue,
+)
 
 from config.qdrant_client import (
     client,
@@ -80,3 +85,31 @@ def add_to_qdrant(
             points=batch,
             wait=True
         )
+
+
+def delete_document_vectors(
+    user_id: str,
+    doc_id: str
+):
+    client.delete(
+        collection_name=QDRANT_COLLECTION,
+        points_selector=FilterSelector(
+            filter=Filter(
+                must=[
+                    FieldCondition(
+                        key="user_id",
+                        match=MatchValue(
+                            value=str(user_id)
+                        )
+                    ),
+                    FieldCondition(
+                        key="doc_id",
+                        match=MatchValue(
+                            value=str(doc_id)
+                        )
+                    )
+                ]
+            )
+        ),
+        wait=True
+    )    

@@ -1,6 +1,4 @@
 from pypdf import PdfReader
-import cloudinary
-import cloudinary.uploader
 import os
 import uuid
 
@@ -12,13 +10,6 @@ load_dotenv()
 
 
 MAX_PDF_SIZE = 50 * 1024 * 1024
-
-
-# cloudinary.config(
-#     cloud_name = os.getenv("CLOUD_NAME"),
-#     api_key = os.getenv("CLOUDINARY_API"),
-#     api_secret = os.getenv("CLOUDINARY_API_SECRET")
-# )
 
 
 async def store_pdf(file, user_id, conversation_id):
@@ -60,31 +51,14 @@ async def store_pdf(file, user_id, conversation_id):
         return {"success": False, "message": "Supabase upload failed!", "error": str(e)}
 
 
-# store pdf in cloudinary
-# def store_pdf(file):
-#     try:
-#         result = cloudinary.uploader.upload(
-#             file,
-#             resource_type = 'raw',
-#             folder = "DocLens_pdfs"
-#         )
+def delete_pdf_from_storage(
+    bucket: str,
+    storage_path: str
+):
+    supabase.storage.from_(bucket).remove([
+        storage_path
+    ])
 
-
-#         return {
-#             "success": True,
-#             "message": "pdf uploaded successfully",
-#             "url": result.get("secure_url"),
-
-#         }
-
-
-#     except Exception as e:
-#         return {
-#             "success": False,
-#             "message": "cloudinary upload failed!",
-#             "error": str(e)
-
-#         }
 
 
 # extract text from pdf
