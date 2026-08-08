@@ -93,3 +93,13 @@ export const getNewConversationId = async () => {
     throw err;
   }
 };
+
+export const deleteConversationById = async (conversation_id) => {
+  try {
+    const response = await api.post(`/delete/${conversation_id}`)
+
+    return response.data
+  } catch(err) {
+    throw err
+  }
+}

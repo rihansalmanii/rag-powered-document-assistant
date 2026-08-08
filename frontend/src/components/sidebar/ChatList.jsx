@@ -8,8 +8,10 @@ import {
   FiMessageSquare,
   FiRefreshCw
 } from "react-icons/fi"
+import { MdDeleteOutline } from "react-icons/md";
 
-import { getAllConversations } from "../../api/chatApi"
+
+import { getAllConversations, deleteConversationById } from "../../api/chatApi"
 
 const ChatList = () => {
   const navigate = useNavigate()
@@ -50,6 +52,16 @@ const ChatList = () => {
     navigate(`/chat/${conversationId}`)
   }
 
+  const handleDeleteConversation = async (conversationId) => {
+    try {
+      const data = await deleteConversationById(conversationId)
+      return data
+
+    } catch(err) {
+        console.log(err.message)
+    }
+  }
+
   return (
     <section className="flex h-full min-h-0 flex-col overflow-hidden px-3 pb-3 pt-4">
       {/* Title */}
@@ -75,9 +87,8 @@ const ChatList = () => {
             className="flex h-7 w-7 items-center justify-center rounded-lg text-white/55 transition hover:bg-white/[0.06] hover:text-white/65 disabled:opacity-40"
           >
             <FiRefreshCw
-              className={`text-sm ${
-                loading ? "animate-spin" : ""
-              }`}
+              className={`text-sm ${loading ? "animate-spin" : ""
+                }`}
             />
           </button>
         </div>
@@ -147,59 +158,65 @@ const ChatList = () => {
                 activeConversationId === conversationId
 
               return (
-                <button
-                  type="button"
+                <div
                   key={conversationId}
-                  onClick={() =>
-                    openChat(conversationId)
-                  }
-                  className={`group relative flex w-full min-w-0 items-center gap-3 overflow-hidden rounded-2xl border px-3 py-2.5 text-left transition ${
-                    isActive
+                  className={`group relative flex w-full min-w-0 items-center gap-2 overflow-hidden rounded-2xl border px-2 py-2 transition ${isActive
                       ? "border-white/[0.1] bg-white/[0.085] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
                       : "border-transparent text-white/50 hover:bg-white/[0.05] hover:text-white/80"
-                  }`}
+                    }`}
                 >
-                  {isActive && (
-                    <span className="absolute left-0 top-1/2 h-6 w-[2px] -translate-y-1/2 rounded-r-full bg-white/80 shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
-                  )}
-
-                  <span
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border transition ${
-                      isActive
-                        ? "border-white/[0.1] bg-white/[0.095] text-white"
-                        : "border-white/[0.05] bg-white/[0.03] text-white/25 group-hover:bg-white/[0.065] group-hover:text-white/55"
-                    }`}
+                  <button
+                    type="button"
+                    onClick={() => openChat(conversationId)}
+                    className="flex min-w-0 flex-1 items-center gap-3 text-left"
                   >
-                    <FiMessageSquare className="text-sm" />
-                  </span>
-
-                  <span className="min-w-0 flex-1 overflow-hidden">
                     <span
-                      className={`block w-full truncate text-[16px] ${
-                        isActive
-                          ? "font-medium text-white"
-                          : "text-white/50 group-hover:text-white/80"
-                      }`}
-                      title={
-                        conversation.title || "New Chat"
-                      }
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border transition ${isActive
+                          ? "border-white/[0.1] bg-white/[0.095] text-white"
+                          : "border-white/[0.05] bg-white/[0.03] text-white/25 group-hover:bg-white/[0.065] group-hover:text-white/55"
+                        }`}
                     >
-                      {conversation.title || "New Chat"}
+                      <FiMessageSquare className="text-sm" />
                     </span>
 
-                    <span className="mt-0.5 block truncate text-[10px] text-white/18">
-                      Document conversation
-                    </span>
-                  </span>
+                    <span className="min-w-0 flex-1 overflow-hidden">
+                      <span
+                        className={`block w-full truncate text-[16px] ${isActive
+                            ? "font-medium text-white"
+                            : "text-white/50 group-hover:text-white/80"
+                          }`}
+                        title={conversation.title || "New Chat"}
+                      >
+                        {conversation.title || "New Chat"}
+                      </span>
 
-                  <span
-                    className={`h-1.5 w-1.5 shrink-0 rounded-full ${
-                      isActive
-                        ? "bg-white/65"
-                        : "bg-transparent group-hover:bg-white/20"
-                    }`}
-                  />
-                </button>
+                      <span className="mt-0.5 block truncate text-[10px] text-white/18">
+                        Document conversation
+                      </span>
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteConversation(conversationId)}
+                    aria-label="Delete conversation"
+                    className="
+                      shrink-0
+                      opacity-0
+                      group-hover:opacity-100
+                      p-1.5
+                      rounded-lg
+                      text-white/30
+                      hover:text-red-400
+                      hover:bg-red-500/10
+                      active:scale-95
+                      transition-all
+                      duration-200
+                      ease-out
+                    ">
+                    <MdDeleteOutline size={18} />
+                  </button>
+                </div>
               )
             })}
           </div>

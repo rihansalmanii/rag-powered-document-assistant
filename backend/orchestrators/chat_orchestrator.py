@@ -157,7 +157,7 @@ def handle_delete_conversation_by_id(conversation_id: str, user_id: str):
             })
 
             return {
-                "succcess": True,
+                "success": True,
                 "message": "conversation deleted successfully"
             }
         
