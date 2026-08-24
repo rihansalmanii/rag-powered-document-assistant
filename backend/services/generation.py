@@ -8,7 +8,7 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 
 def generate_answer(query: str, chunks: list, history: list = None):
-    # 🔹 Build structured context
+    # Build structured context
     if chunks:
         context = "\n\n".join(
             [c.get("text", "") for c in chunks]
@@ -16,7 +16,7 @@ def generate_answer(query: str, chunks: list, history: list = None):
     else:
         context = "No relevant context found."
 
-    # 🔹 System prompt (stronger + safer)
+    #  System prompt (stronger + safer)
     messages = [
         {
             "role": "system",
@@ -31,7 +31,7 @@ def generate_answer(query: str, chunks: list, history: list = None):
         }
     ]
 
-    # 🔹 Add recent conversation history (safe usage)
+    #  Add recent conversation history (safe usage)
     if history:
         for msg in history[-6:]:  # limit history to avoid overload
             role = msg.get("role")
@@ -43,7 +43,7 @@ def generate_answer(query: str, chunks: list, history: list = None):
                     "content": content
                 })
 
-    # 🔹 Add current query with context
+    #  Add current query with context
     messages.append({
         "role": "user",
         "content": f"""
@@ -56,7 +56,7 @@ Question:
 """
     })
 
-    # 🔹 Call Groq API
+    #  Call Groq API
     response = client.chat.completions.create(
         model="openai/gpt-oss-20b",
         messages=messages,

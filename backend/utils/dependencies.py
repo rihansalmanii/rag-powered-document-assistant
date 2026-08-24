@@ -40,8 +40,6 @@ def get_current_user(request: Request):
             detail="Token has no user_id"
         )
 
-    print("JWT USER ID:", user_id)
-
     # 3. Convert ObjectId
     try:
         user_object_id = ObjectId(user_id)

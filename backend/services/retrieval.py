@@ -73,8 +73,6 @@ def retrieve_chunks(
 
         SCORE_THRESHOLD = 0.46
 
-        # Do not apply a threshold yet.
-        # First confirm that retrieval works correctly.
         if text and point.score >= SCORE_THRESHOLD:
             chunks.append({
                 "text": text,

@@ -7,8 +7,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import os
 
-
-
 app = FastAPI()
 
 FRONTEND_URL = os.getenv(
