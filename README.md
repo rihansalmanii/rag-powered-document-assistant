@@ -164,7 +164,7 @@ The application will normally run at:
 http://localhost:5173
 ```
 
-## 📌 Current Limitations
+##  Current Limitations
 
 - One PDF per conversation
 - Limited support for scanned/image-only PDFs
