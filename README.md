@@ -1,6 +1,6 @@
 # DocLens 📄
 
-**DocLens** is an AI-powered PDF assistant that allows users to upload documents and ask questions about their content using natural language.
+**DocLens** is an AI-powered PDF assistant that allows users to upload documents and ask questions about their content using natural language. 
 
 The application uses **Retrieval-Augmented Generation (RAG)** to retrieve relevant information from uploaded PDFs and provide that context to an LLM for document-grounded response generation.
 
